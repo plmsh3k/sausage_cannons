@@ -1,21 +1,33 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import { Header } from './components/Header';
-import { Balance } from './components/Balance';
-import { IncomeExpenses } from './components/IncomeExpenses';
-import { TransactionList } from './components/TransactionList';
-import { AddTransaction } from './components/AddTransaction';
-import { Darts301 } from './components/Darts301';
+import SetupForm from './components/SetupForm';
+import ScoreBoard from './components/ScoreBoard';
 
 
 function App() {
+  const [players, setPlayers] = useState([]);
+  const [gameType, setGameType] = useState('301'); 
+  const [setSize, setSetSize] = useState(3); 
+  const [gameStarted, setGameStarted] = useState(false);
+
   return (
-    <div>
-      < Header />
-      <div className="container">
-        <Darts301/>
+    <div className="app-container">
+      { !gameStarted ? (
+        <SetupForm
+        onSubmit={(players, gameType, setSize) => {
+          setPlayers(players);
+          setGameType(gameType);
+          setSetSize(setSize);
+          setGameStarted(true);
+        }}
+        />
+      ) : (
+        <ScoreBoard
+          players={players}
+          gameType={gameType}
+          gameStarted={gameStarted} />
+      )}
       </div>
-    </div>
   );
 }
 
