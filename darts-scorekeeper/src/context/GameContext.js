@@ -1,68 +1,122 @@
+// src/context/GameContext.js
+
 import React, { createContext, useContext, useReducer } from 'react';
 
 const GameContext = createContext();
 
 const initialState = {
+  gameStarted: false,
   players: [],
   currentTurn: 0,
-  currentGame: '501',
-  scores: {}
+  startingScore: 301, // Default to 301 game
+  scores: {},
+  scoreHistory: [], // To keep track of each turn to allow undo
+};
+
+const ActionTypes = {
+  SET_GAME_TYPE: 'SET_GAME_TYPE',
+  ADD_PLAYER: 'ADD_PLAYER',
+  START_GAME: 'START_GAME',
+  UPDATE_SCORE: 'UPDATE_SCORE',
+  UNDO_LAST_SCORE: 'UNDO_LAST_SCORE',
+  NEW_GAME: 'NEW_GAME',
 };
 
 function gameReducer(state, action) {
   switch (action.type) {
-    case 'ADD_PLAYER':
+    case ActionTypes.SET_GAME_TYPE:
+      const startingScore = parseInt(action.payload, 10);
+      return {
+        ...state,
+        startingScore,
+        scores: state.players.reduce((acc, player) => {
+          acc[player] = startingScore;
+          return acc;
+        }, {}),
+      };
+
+    case ActionTypes.ADD_PLAYER:
+      if (state.players.includes(action.payload)) {
+        alert('Player names must be unique.');
+        return state;
+      }
       return {
         ...state,
         players: [...state.players, action.payload],
-        scores: {...state.scores, [action.payload]: []}
+        scores: {
+          ...state.scores,
+          [action.payload]: state.startingScore
+        },
       };
-    case 'UPDATE_SCORE':
-        const { playerName, score } = action.payload;
-        // Assuming you have a starting score of 501 for each player
-        // Make sure to validate the score before updating to avoid negative totals
-        const updatedScores = state.scores[playerName].concat(score);
-        const remainingScore = 501 - updatedScores.reduce((a, b) => a + b, 0);
-      
-        if (remainingScore < 0) {
-        } else {
-          // Update state with the new score
-          return {
-            ...state,
-            scores: {
-              ...state.scores,
-              [playerName]: updatedScores
-            },
-            // Move to the next player's turn
-            currentTurn: (state.currentTurn + 1) % state.players.length
-          };
-        }
-        break;
-    case 'NEXT_TURN':
-        return {
+
+    case ActionTypes.START_GAME:
+      if (state.players.length < 1) {
+        alert('You must add at least one player to start the game.');
+        return state;
+      }
+      return {
         ...state,
-        currentTurn: (state.currentTurn + 1) % state.players.length
-        };
-    case 'NEW_GAME':
-        return initialState;
-          
-    case 'UNDO_LAST_SCORE':
-        const currentPlayer = state.players[state.currentTurn];
-        const currentPlayerScores = state.scores[currentPlayer];
-        currentPlayerScores.pop(); // Remove the last score
+        gameStarted: true,
+        currentTurn: 0,
+      };
+
+    case ActionTypes.UPDATE_SCORE:
+      const updatedScores = { ...state.scores };
+      const currentPlayer = state.players[state.currentTurn];
+      const scoreSubtraction = updatedScores[currentPlayer] - action.payload;
+      
+      // Prevent negative scores or scores that cannot win the game (e.g., left with 1 point)
+      if (scoreSubtraction < 0 || scoreSubtraction === 1) {
+        alert('Bust! Score cannot go below zero or end on 1.');
         return {
-            ...state,
-            scores: {
+          ...state,
+          currentTurn: (state.currentTurn + 1) % state.players.length,
+        };
+      }
+
+      updatedScores[currentPlayer] = scoreSubtraction;
+      
+      // Track score history for undo functionality
+      const newHistory = [...state.scoreHistory, { player: currentPlayer, score: action.payload }];
+
+      return {
+        ...state,
+        scores: updatedScores,
+        scoreHistory: newHistory,
+        currentTurn: (state.currentTurn + 1) % state.players.length,
+      };
+
+    case ActionTypes.UNDO_LAST_SCORE:
+      const history = [...state.scoreHistory];
+      const lastTurn = history.pop();
+      if (lastTurn) {
+        return {
+          ...state,
+          scores: {
             ...state.scores,
-            [currentPlayer]: currentPlayerScores
-            }
-            };
-}}
+            [lastTurn.player]: state.scores[lastTurn.player] + lastTurn.score,
+          },
+          currentTurn: state.players.indexOf(lastTurn.player),
+          scoreHistory: history,
+        };
+      }
+      return state;
 
+    case ActionTypes.NEW_GAME:
+      return {
+        ...initialState,
+        players: state.players,
+        startingScore: state.startingScore,
+      };
 
+    default:
+      return state;
+  }
+}
 
 export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
+
   return (
     <GameContext.Provider value={{ state, dispatch }}>
       {children}
@@ -72,3 +126,4 @@ export const GameProvider = ({ children }) => {
 
 export const useGame = () => useContext(GameContext);
 
+export default GameContext;
