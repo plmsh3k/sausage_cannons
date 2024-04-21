@@ -1,19 +1,19 @@
-import React from "react";
-import Player from "./Player";
+import React from 'react';
+import { useGame } from '../context/GameContext';
 
-function ScoreBoard({ players, gameType}) {
-    return (
-        <div className="scoreboard">
-            {/*Display the game type*/}
-            <h2>{gameType}</h2>
+export default function Scoreboard() {
+  const { state } = useGame();
 
-            <div className="player-list">
-                {players.map((name, index) => (
-                    <Player key={index} name={name} />
-                ))}
-            </div>
+  return (
+    <div>
+      <h2>Scoreboard</h2>
+      // Modified part of Scoreboard.js
+        {state.players.map((player, index) => (
+        <div key={player} className={index === state.currentTurn ? 'currentTurn' : ''}>
+            <h3>{player} {index === state.currentTurn && '(Your Turn)'}</h3>
+            <p>Scores: {state.scores[player].join(", ")}</p>
         </div>
-    );
+        ))}
+    </div>
+  );
 }
-
-export default ScoreBoard;
