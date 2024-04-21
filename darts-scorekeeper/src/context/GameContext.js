@@ -18,13 +18,28 @@ function gameReducer(state, action) {
         scores: {...state.scores, [action.payload]: []}
       };
     case 'UPDATE_SCORE':
-      const { player, score } = action.payload;
-      const newScores = {...state.scores};
-      newScores[player].push(score);
-      return {
-        ...state,
-        scores: newScores
-      };
+        const { playerName, score } = action.payload;
+        // Assuming you have a starting score of 501 for each player
+        // Make sure to validate the score before updating to avoid negative totals
+        const updatedScores = state.scores[playerName].concat(score);
+        const remainingScore = 501 - updatedScores.reduce((a, b) => a + b, 0);
+      
+        if (remainingScore < 0) {
+          // Handle bust (score went below zero)
+          // Do not update the score, and it could be the end of the turn
+        } else {
+          // Update state with the new score
+          return {
+            ...state,
+            scores: {
+              ...state.scores,
+              [playerName]: updatedScores
+            },
+            // Move to the next player's turn
+            currentTurn: (state.currentTurn + 1) % state.players.length
+          };
+        }
+        break;
     case 'NEXT_TURN':
         return {
         ...state,

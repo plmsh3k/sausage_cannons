@@ -1,3 +1,5 @@
+// ScoreInput.js
+import React, { useState } from 'react';
 import { useGame } from '../context/GameContext';
 
 export default function ScoreInput() {
@@ -11,19 +13,24 @@ export default function ScoreInput() {
       type: 'UPDATE_SCORE',
       payload: { player: currentPlayer, score: parseInt(score, 10) }
     });
-    dispatch({ type: 'NEXT_TURN' });
-    setScore('');
+    setScore(''); // Clear the input after submission
   };
 
-  return (
-    <form onSubmit={submitScore}>
-      <input
-        type="number"
-        value={score}
-        onChange={(e) => setScore(e.target.value)}
-        placeholder="Enter player score"
-      />
-      <button type="submit">Submit Score</button>
-    </form>
-  );
+  // Only show score input if players exist
+  if (state.players.length > 0) {
+    return (
+      <form onSubmit={submitScore}>
+        <input
+          type="number"
+          value={score}
+          onChange={(e) => setScore(e.target.value)}
+          placeholder="Enter score"
+          required
+        />
+        <button type="submit">Submit Score</button>
+      </form>
+    );
+  } else {
+    return null; // Render nothing if no players are added
+  }
 }
