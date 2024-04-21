@@ -1,34 +1,28 @@
-// ScoreInput.js
+// PlayerInput.js
 import React, { useState } from 'react';
 import { useGame } from '../context/GameContext';
 
-export default function ScoreInput() {
-  const [score, setScore] = useState('');
-  const { state, dispatch } = useGame();
-  const { currentTurn, players } = state;
+export default function PlayerInput() {
+  const [playerName, setPlayerName] = useState('');
+  const { dispatch } = useGame();
 
-  const handleScoreSubmit = (e) => {
+  const addPlayer = (e) => {
     e.preventDefault();
-    dispatch({ 
-      type: 'UPDATE_SCORE', 
-      payload: { player: players[currentTurn], score: parseInt(score, 10) }
-    });
-    setScore('');
-    // Rotate to next player's turn
-    dispatch({
-      type: 'NEXT_TURN'
-    });
+    if (playerName.trim()) {
+      dispatch({ type: 'ADD_PLAYER', payload: playerName.trim() });
+      setPlayerName('');
+    }
   };
 
   return (
-    <form onSubmit={handleScoreSubmit}>
+    <form onSubmit={addPlayer}>
       <input
-        type="number"
-        value={score}
-        onChange={(e) => setScore(e.target.value)}
-        placeholder="Enter player score"
+        type="text"
+        value={playerName}
+        onChange={(e) => setPlayerName(e.target.value)}
+        placeholder="Enter player name"
       />
-      <button type="submit">Submit Score</button>
+      <button type="submit">Add Player</button>
     </form>
   );
 }

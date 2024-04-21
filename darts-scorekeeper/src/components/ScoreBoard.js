@@ -7,7 +7,6 @@ export default function Scoreboard() {
   return (
     <div>
       <h2>Scoreboard</h2>
-      // Modified part of Scoreboard.js
         {state.players.map((player, index) => (
         <div key={player} className={index === state.currentTurn ? 'currentTurn' : ''}>
             <h3>{player} {index === state.currentTurn && '(Your Turn)'}</h3>
