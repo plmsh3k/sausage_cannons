@@ -25,8 +25,6 @@ function gameReducer(state, action) {
         const remainingScore = 501 - updatedScores.reduce((a, b) => a + b, 0);
       
         if (remainingScore < 0) {
-          // Handle bust (score went below zero)
-          // Do not update the score, and it could be the end of the turn
         } else {
           // Update state with the new score
           return {
@@ -46,11 +44,20 @@ function gameReducer(state, action) {
         currentTurn: (state.currentTurn + 1) % state.players.length
         };
     case 'NEW_GAME':
-      return initialState;
-    default:
-      return state;
-  }
-}
+        return initialState;
+          
+    case 'UNDO_LAST_SCORE':
+        const currentPlayer = state.players[state.currentTurn];
+        const currentPlayerScores = state.scores[currentPlayer];
+        currentPlayerScores.pop(); // Remove the last score
+        return {
+            ...state,
+            scores: {
+            ...state.scores,
+            [currentPlayer]: currentPlayerScores
+            }
+            };
+}}
 
 
 

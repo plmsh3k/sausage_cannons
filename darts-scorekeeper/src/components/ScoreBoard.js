@@ -8,14 +8,18 @@ export default function Scoreboard() {
   
     return (
       <div>
-        <h2>Scoreboard</h2>
-        {players.map((player, index) => (
-          <div key={player} className={index === currentTurn ? 'currentTurn' : ''}>
+        {players.map((player, index) => {
+        const totalScore = scores[player].reduce((acc, round) => acc + round, 0);
+        const remaining = 501 - totalScore; // Assuming starting score is 501
+
+        return (
+            <div key={player} className={index === currentTurn ? 'currentTurn' : ''}>
             <h3>{player} {index === currentTurn && '(Your Turn)'}</h3>
-            <p>Remaining: {501 - scores[player].reduce((acc, score) => acc + score, 0)}</p>
+            <p>Remaining: {remaining}</p>
             <p>Scores: {scores[player].join(', ')}</p>
-          </div>
-        ))}
+            </div>
+        );
+        })}
       </div>
     );
   }
