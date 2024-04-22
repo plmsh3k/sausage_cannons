@@ -6,12 +6,13 @@ const GameContext = createContext();
 
 const initialState = {
   gameStarted: false,
-  players: [],
+  players: [], // No players initially
   currentTurn: 0,
-  startingScore: 301, // Default to 301 game
-  scores: {},
-  scoreHistory: [], // To keep track of each turn to allow undo
+  startingScore: 301,
+  scores: {}, // No scores initially
+  scoreHistory: [] // No history initially
 };
+
 
 const ActionTypes = {
   SET_GAME_TYPE: 'SET_GAME_TYPE',
@@ -25,29 +26,26 @@ const ActionTypes = {
 function gameReducer(state, action) {
   switch (action.type) {
     case ActionTypes.SET_GAME_TYPE:
-      const startingScore = parseInt(action.payload, 10);
-      return {
-        ...state,
-        startingScore,
-        scores: state.players.reduce((acc, player) => {
-          acc[player] = startingScore;
-          return acc;
-        }, {}),
-      };
+  const startingScore = parseInt(action.payload, 10); // Parse as integer to ensure it's a number
+  return {
+    ...state,
+    startingScore,
+    scores: state.players.reduce((acc, player) => {
+      acc[player] = startingScore; // Set as a numeric value
+      return acc;
+    }, {}),
+  };
 
-    case ActionTypes.ADD_PLAYER:
-      if (state.players.includes(action.payload)) {
-        alert('Player names must be unique.');
-        return state;
-      }
-      return {
-        ...state,
-        players: [...state.players, action.payload],
-        scores: {
-          ...state.scores,
-          [action.payload]: state.startingScore
-        },
-      };
+  case ActionTypes.ADD_PLAYER:
+    return {
+      ...state,
+      players: [...state.players, action.payload],
+      scores: {
+        ...state.scores,
+        [action.payload]: state.startingScore // Make sure this is a number
+      },
+    };
+  
 
     case ActionTypes.START_GAME:
       if (state.players.length < 1) {
@@ -60,31 +58,56 @@ function gameReducer(state, action) {
         currentTurn: 0,
       };
 
-    case ActionTypes.UPDATE_SCORE:
-      const updatedScores = { ...state.scores };
-      const currentPlayer = state.players[state.currentTurn];
-      const scoreSubtraction = updatedScores[currentPlayer] - action.payload;
+      case ActionTypes.UPDATE_SCORE:
+        const { playerName, score } = action.payload;
+        // Get the current score from the state.
+        const currentScore = state.scores[playerName];
+        const currentPlayer = state.players[state.currentTurn];
+        // Calculate what the new score would be.
+        const newScore = currentScore - score;
       
-      // Prevent negative scores or scores that cannot win the game (e.g., left with 1 point)
-      if (scoreSubtraction < 0 || scoreSubtraction === 1) {
-        alert('Bust! Score cannot go below zero or end on 1.');
-        return {
-          ...state,
-          currentTurn: (state.currentTurn + 1) % state.players.length,
-        };
-      }
-
-      updatedScores[currentPlayer] = scoreSubtraction;
+        // Check for a valid new score.
+        if (newScore < 0 || (newScore === 1 && state.gameType === '01')) {
+          // If new score is below zero or equal to 1 in '01 games (which is not allowed),
+          // it's a "bust," so the score should not change, and it's the next player's turn.
+          alert('Bust! Score cannot go below zero or end on 1.');
+          return {
+            ...state,
+            currentTurn: (state.currentTurn + 1) % state.players.length,
+            // Optionally handle score history here for undoing a "bust" turn.
+          };
+        } else if (newScore === 0) {
+          // Handle winning condition
+          alert(`${currentPlayer} wins!`); // or use a modal/dialogue box for a more polished UI
       
-      // Track score history for undo functionality
-      const newHistory = [...state.scoreHistory, { player: currentPlayer, score: action.payload }];
-
-      return {
-        ...state,
-        scores: updatedScores,
-        scoreHistory: newHistory,
-        currentTurn: (state.currentTurn + 1) % state.players.length,
-      };
+          // Use `window.confirm` to ask the user if they want to start a new game
+          if (window.confirm('Game over. Do you want to start a new game?')) {
+            // Reset the game state to initial state
+            return {
+              ...initialState,
+              players: [], // Clear players if you want to start fresh
+              scores: {}, // Clear scores
+            };
+          } else {
+            // If the user does not want to start a new game, you can set a flag or navigate away
+            return {
+              ...state,
+              isGameOver: true, // You can use this flag to block new scores being submitted
+            };
+          }
+        } else {
+          // If new score is valid, update the score and proceed to the next player's turn.
+          return {
+            ...state,
+            scores: {
+              ...state.scores,
+              [playerName]: newScore,
+            },
+            currentTurn: (state.currentTurn + 1) % state.players.length,
+            // Update score history for undo functionality.
+            scoreHistory: [...state.scoreHistory, { playerName, score }],
+          };
+        }
 
     case ActionTypes.UNDO_LAST_SCORE:
       const history = [...state.scoreHistory];
@@ -103,16 +126,16 @@ function gameReducer(state, action) {
       return state;
 
     case ActionTypes.NEW_GAME:
+      // Reset to a completely new game state
       return {
-        ...initialState,
-        players: state.players,
-        startingScore: state.startingScore,
+          ...initialState,  // Ensure that initialState is a clean slate
+          // If you want to keep the player names for the new game, do not reset 'players' and 'scores'.
+          // If you want to start fresh with no players (as per your issue), you can reset these as well:
+        players: [],
+        scores: {},
+        scoreHistory: []
       };
-
-    default:
-      return state;
-  }
-}
+    }}
 
 export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
