@@ -49,7 +49,7 @@ function SetupForm({ startGame }) {
               placeholder={`Player ${index + 1} name`}
             />
           ))}
-        </div>
+        </div >
         
         <button type="button" onClick={addPlayerInput}>Add Player</button>
         <button type="submit">Start Game</button>

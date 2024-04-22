@@ -1,0 +1,31 @@
+/* App.css */
+.app-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Full height of the viewport */
+    background-color: #121212; /* Dark background for a dark theme */
+  }
+  
+  /* Center the game controls box and add styling */
+  .game-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #252525; /* Dark shade for the box */
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Soft box shadow for some depth */
+  }
+  
+  /* Style the Scoreboard component */
+  .scoreboard {
+    text-align: center;
+    color: #ffffff;
+  }
+  
+  /* You might want to style ScoreInput similarly to GameControls */
+  /* And add any additional styling for other components like SetupForm and PlayerInput */
+  

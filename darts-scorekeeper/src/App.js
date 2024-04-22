@@ -16,7 +16,7 @@ const App = () => {
   };
 
   return (
-    <div className="App">
+    <div className="app-container">
       {!state.gameStarted ? (
         <SetupForm startGame={handleStartGame} />
       ) : (
