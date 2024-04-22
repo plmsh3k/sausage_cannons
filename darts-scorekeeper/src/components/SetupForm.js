@@ -1,26 +1,62 @@
-import react, { useState } from 'react';
+// src/components/SetupForm.js
 
-function SetupForm({onSubmit}) {
-    const [playerNames, setPlayerNames] = useState(["", ""]);
+import React, { useState } from 'react';
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        onSubmit(playerNames, '301', 3);
-    };
+function SetupForm({ startGame }) {
+  const [gameType, setGameType] = useState('301');
+  const [players, setPlayers] = useState(['']); // Start with one empty player
 
-    return (
+  const addPlayerInput = () => {
+    setPlayers([...players, '']);
+  };
+
+  const handlePlayerNameChange = (index, newName) => {
+    const updatedPlayers = [...players];
+    updatedPlayers[index] = newName;
+    setPlayers(updatedPlayers);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    startGame(gameType, players.filter(name => name.trim() !== ''));
+  };
+
+  return (
+    <div className="setup-container"> {/* Centering container */}
+      <div className="setup-box"> {/* Box container for content */}
         <form onSubmit={handleSubmit}>
-      {/* Input fields for players */}  
+          <div>
+            <label htmlFor="gameType">Select game type:</label>
+            <select
+              id="gameType"
+              value={gameType}
+              onChange={(e) => setGameType(e.target.value)}
+            >
+              <option value="301">301</option>
+              <option value="501">501</option>
+            </select>
+          </div>
 
-            <ul> 
-                {playerNames.map((name, index) => (
-                    <li key={index}>{name}</li>
-                ))}
-            </ul> 
+          <div className="player-inputs">
+            {players.map((name, index) => (
+              <input
+                key={index}
+                type="text"
+                value={name}
+                onChange={(e) => handlePlayerNameChange(index, e.target.value)}
+                placeholder={`Player ${index + 1} name`}
+              />
+            ))}
+          </div>
 
+          <div className="form-buttons"> {}
+            <button type="button" onClick={addPlayerInput}>Add Player</button>
             <button type="submit">Start Game</button>
+          </div>
         </form>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default SetupForm;

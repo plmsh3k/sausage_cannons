@@ -1,34 +1,37 @@
-import React, {useState} from 'react';
-import './App.css';
+// src/App.js
+import React, { useState } from 'react';
+import { GameProvider, useGame } from './context/GameContext';
 import SetupForm from './components/SetupForm';
-import ScoreBoard from './components/ScoreBoard';
+import Scoreboard from './components/ScoreBoard';
+import ScoreInput from './components/ScoreInput';
+import GameControls from './components/GameControls';
 
+const App = () => {
+  const { state, dispatch } = useGame();
 
-function App() {
-  const [players, setPlayers] = useState([]);
-  const [gameType, setGameType] = useState('301'); 
-  const [setSize, setSetSize] = useState(3); 
-  const [gameStarted, setGameStarted] = useState(false);
+  const handleStartGame = (gameType, players) => {
+    dispatch({ type: 'SET_GAME_TYPE', payload: gameType });
+    players.forEach((player) => dispatch({ type: 'ADD_PLAYER', payload: player }));
+    dispatch({ type: 'START_GAME' });
+  };
 
   return (
     <div className="app-container">
-      { !gameStarted ? (
-        <SetupForm
-        onSubmit={(players, gameType, setSize) => {
-          setPlayers(players);
-          setGameType(gameType);
-          setSetSize(setSize);
-          setGameStarted(true);
-        }}
-        />
+      {!state.gameStarted ? (
+        <SetupForm startGame={handleStartGame} />
       ) : (
-        <ScoreBoard
-          players={players}
-          gameType={gameType}
-          gameStarted={gameStarted} />
+        <>
+          <Scoreboard />
+          <ScoreInput />
+          <GameControls />
+        </>
       )}
-      </div>
+    </div>
   );
-}
+};
 
-export default App;
+export default () => (
+  <GameProvider>
+    <App />
+  </GameProvider>
+);
