@@ -20,8 +20,10 @@ export default function GameControls() {
 
   return (
     <div className="game-controls">
+      <div className="buttons-container"> {}
       <button onClick={startNewGame}>New Game</button>
       <button onClick={undoLastScore}>Undo Last Score</button>
+    </div>
     </div>
   );
 }
