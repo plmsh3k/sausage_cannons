@@ -10,7 +10,7 @@ const Scoreboard = () => {
       <h2>Scoreboard</h2>
       {players.map((player) => (
         <div key={player} className="player-score">
-          <span className="player-name">{player}</span>
+          <span className="player-name">{player}: </span>
           <span className="player-points">Points left: {scores[player]}</span>
         </div>
       ))}

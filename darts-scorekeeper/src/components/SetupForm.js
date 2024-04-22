@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 
 function SetupForm({ startGame }) {
-  const [gameType, setGameType] = useState('301'); // Default game type
+  const [gameType, setGameType] = useState('301'); 
   const [players, setPlayers] = useState(['']); // Start with one empty player
 
   // Handles the addition of a new player input field
@@ -11,17 +11,17 @@ function SetupForm({ startGame }) {
     setPlayers([...players, '']); // Add another empty string to the players array
   };
 
-  // Updates the specific player's name based on the input field's index
+  // Updates the specific player's name based on the input field's index //
   const handlePlayerNameChange = (index, newName) => {
     const updatedPlayers = [...players];
     updatedPlayers[index] = newName;
     setPlayers(updatedPlayers);
   };
 
-  // When the form is submitted, call the startGame function passed from the App component
+  // When the form is submitted, call the startGame function passed from the App component //
   const handleSubmit = (event) => {
     event.preventDefault();
-    startGame(gameType, players.filter(name => name.trim() !== '')); // Filter out empty names
+    startGame(gameType, players.filter(name => name.trim() !== '')); // Filter out empty names //
   };
 
   return (

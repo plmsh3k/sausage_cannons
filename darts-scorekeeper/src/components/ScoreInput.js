@@ -10,10 +10,10 @@ export default function ScoreInput() {
 
   const handleScoreSubmit = (e) => {
     e.preventDefault();
-    // Convert input to an integer and ensure it's a valid score.
+    // Convert input to an integer and ensure it's a valid score. //
     const scoreInt = parseInt(score, 10);
     
-    // Check if the score is a number and positive
+    // Check if the score is a number and positive //
     if (!isNaN(scoreInt) && scoreInt > 0) {
       dispatch({
         type: 'UPDATE_SCORE',
@@ -21,19 +21,19 @@ export default function ScoreInput() {
       });
       setScore(''); // Reset the score input after submission
     } else {
-      // Provide feedback for invalid input
+      // Provide feedback for invalid input :)
       alert('Please enter a valid score.');
     }
   };
 
-  // Render form only if the game has started, there are players, and it's someone's turn
+  // Render form only if the game has started, there are players, and it's someone's turn!? //
   if (!state.gameStarted || state.players.length === 0 || state.currentTurn === null) {
     return null;
   }
 
   return (
     <form onSubmit={handleScoreSubmit}>
-      <label htmlFor="scoreInput">{`Enter ${currentPlayer}'s score:`}</label>
+      <label htmlFor="scoreInput">{`Enter ${currentPlayer}'s score: `}</label>
       <input
         id="scoreInput"
         type="number"

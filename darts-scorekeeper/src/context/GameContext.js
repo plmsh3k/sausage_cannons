@@ -6,11 +6,11 @@ const GameContext = createContext();
 
 const initialState = {
   gameStarted: false,
-  players: [], // No players initially
+  players: [], // No players at start
   currentTurn: 0,
   startingScore: 301,
-  scores: {}, // No scores initially
-  scoreHistory: [] // No history initially
+  scores: {}, // No scores at the start
+  scoreHistory: [] // No history at start
 };
 
 
@@ -26,12 +26,12 @@ const ActionTypes = {
 function gameReducer(state, action) {
   switch (action.type) {
     case ActionTypes.SET_GAME_TYPE:
-  const startingScore = parseInt(action.payload, 10); // Parse as integer to ensure it's a number
+  const startingScore = parseInt(action.payload, 10); // Parse as integer its a number
   return {
     ...state,
     startingScore,
     scores: state.players.reduce((acc, player) => {
-      acc[player] = startingScore; // Set as a numeric value
+      acc[player] = startingScore;
       return acc;
     }, {}),
   };
@@ -69,30 +69,27 @@ function gameReducer(state, action) {
         // Check for a valid new score.
         if (newScore < 0 || (newScore === 1 && state.gameType === '01')) {
           // If new score is below zero or equal to 1 in '01 games (which is not allowed),
-          // it's a "bust," so the score should not change, and it's the next player's turn.
           alert('Bust! Score cannot go below zero or end on 1.');
           return {
             ...state,
             currentTurn: (state.currentTurn + 1) % state.players.length,
-            // Optionally handle score history here for undoing a "bust" turn.
           };
         } else if (newScore === 0) {
           // Handle winning condition
-          alert(`${currentPlayer} wins!`); // or use a modal/dialogue box for a more polished UI
+          alert(`${currentPlayer} wins!`);
       
           // Use `window.confirm` to ask the user if they want to start a new game
           if (window.confirm('Game over. Do you want to start a new game?')) {
             // Reset the game state to initial state
             return {
               ...initialState,
-              players: [], // Clear players if you want to start fresh
-              scores: {}, // Clear scores
+              players: [],
+              scores: {},
             };
           } else {
-            // If the user does not want to start a new game, you can set a flag or navigate away
             return {
               ...state,
-              isGameOver: true, // You can use this flag to block new scores being submitted
+              isGameOver: true, // Block new scores being submitted //
             };
           }
         } else {
@@ -109,28 +106,37 @@ function gameReducer(state, action) {
           };
         }
 
-    case ActionTypes.UNDO_LAST_SCORE:
-      const history = [...state.scoreHistory];
-      const lastTurn = history.pop();
-      if (lastTurn) {
-        return {
-          ...state,
-          scores: {
-            ...state.scores,
-            [lastTurn.player]: state.scores[lastTurn.player] + lastTurn.score,
-          },
-          currentTurn: state.players.indexOf(lastTurn.player),
-          scoreHistory: history,
-        };
-      }
-      return state;
+        case ActionTypes.UNDO_LAST_SCORE:
+          const history = [...state.scoreHistory];
+          const lastTurn = history.pop(); // Remove and retrieve the last turn //
+        
+          if (lastTurn) {
+            const { playerName, score } = lastTurn;
+            // Revert the score
+            const revertedScores = {
+              ...state.scores,
+              [playerName]: state.scores[playerName] + score,
+            };
+            
+            // Set the current turn to the player whose turn was undone //
+            const currentPlayerIndex = state.players.indexOf(playerName);
+            
+            return {
+              ...state,
+              scores: revertedScores,
+              currentTurn: currentPlayerIndex,
+              scoreHistory: history,
+            };
+          } else {
+            // No history to undo or some other error handling //
+            alert('No more actions to undo.'); 
+            return state;
+          }
 
     case ActionTypes.NEW_GAME:
       // Reset to a completely new game state
       return {
-          ...initialState,  // Ensure that initialState is a clean slate
-          // If you want to keep the player names for the new game, do not reset 'players' and 'scores'.
-          // If you want to start fresh with no players (as per your issue), you can reset these as well:
+          ...initialState,
         players: [],
         scores: {},
         scoreHistory: []
