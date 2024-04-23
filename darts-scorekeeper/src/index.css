@@ -1,6 +1,9 @@
 body {
-  background: #121212 url('../src/images/darts2.jpeg') no-repeat center center fixed; 
-  background-size: cover;
+  background: radial-gradient(circle at center, #444 0%, #000000 25%, #565252 50%, #222 75%, #444 100%);
+  background-position: center center; 
+  background-repeat: no-repeat; 
+  background-attachment: fixed;
+  background-size: cover; 
   display: flex;
   justify-content: center;
   align-items: center;
