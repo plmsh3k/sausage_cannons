@@ -26,8 +26,14 @@ function SetupForm({ startGame }) {
       <div className="setup-box"> {/* Box container for content */}
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="gameType">Select game type:</label>
+            <label htmlFor="gameType">Select game type: </label>
             <select
+              style={{
+                background: "#4c7450",
+                color: "white",
+                border: "none",
+                padding: 2,
+              }}
               id="gameType"
               value={gameType}
               onChange={(e) => setGameType(e.target.value)}
