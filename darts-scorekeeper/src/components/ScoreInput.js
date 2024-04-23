@@ -23,10 +23,8 @@ export default function ScoreInput() {
       return;
     }
   
-    // Calculate what the new score would be
     const potentialNewScore = currentPlayerScore - scoreInt;
   
-    // Check if the new score would be 1, which is not allowed because it's not possible to finish on a double
     if (potentialNewScore === 1) {
       alert('Score cannot be reduced to 1 as the last dart must be a double.');
       return;
@@ -48,8 +46,6 @@ export default function ScoreInput() {
   
   // Helper function to determine if the score is a double
   function isDouble(score) {
-    // A double is an even number that is less than or equal to 40 (double 20)
-    // and not 50, which is the bullseye, not a double.
     return score <= 40 && score % 2 === 0 && score !== 50;
   }
   
