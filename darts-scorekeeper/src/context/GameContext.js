@@ -79,6 +79,11 @@ function gameReducer(state, action) {
         } else if (newScore === 0) {
           // Handle winning condition
           alert(`${currentPlayer} wins!`);
+
+          // JUNNU EDIT >>> Here should be a part for the legs before window.confirm comes?
+
+
+          
       
           // Use `window.confirm` to ask the user if they want to start a new game
           if (window.confirm('Game over. Do you want to start a new game?')) {
