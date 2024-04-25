@@ -25,7 +25,27 @@
     text-align: center;
     color: #ffffff;
   }
+
+  .header {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    margin-bottom: 20px;
+    position: relative;
+  }
   
-  /* You might want to style ScoreInput similarly to GameControls */
-  /* And add any additional styling for other components like SetupForm and PlayerInput */
+  .logo {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    height: auto; 
+    margin-right: 10px; 
+  }
+  
+  .header-text {
+    font-size: 24px;
+  }
+
+
   

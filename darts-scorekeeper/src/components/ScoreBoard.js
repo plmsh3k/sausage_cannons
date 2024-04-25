@@ -1,16 +1,17 @@
 // src/components/Scoreboard.js
 import React from 'react';
 import { useGame } from '../context/GameContext';
-import dartboardImage from '../images/darts1.jpeg'; // Adjust the path as necessary
+import Legs from './Legs';
 
 
 const Scoreboard = () => {
-  const { state: { players, scores } } = useGame();
+  const { state: { players, scores, currentLeg, totalLegs } } = useGame();
 
   return (
     <div className="scoreboard">
-      <img src={dartboardImage} alt="Dartboard" className="header-image" />
+      <img src={'/darts1.jpeg'} alt="Dartboard" className="header-image" />
       <h2>Scoreboard</h2>
+      <Legs currentLeg={currentLeg} totalLegs={totalLegs} />
       {players.map((player) => (
         <div key={player} className="player-score">
           <span className="player-name">{player}: </span>

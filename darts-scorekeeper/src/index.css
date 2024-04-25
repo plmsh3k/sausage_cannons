@@ -1,9 +1,10 @@
 body {
-  background: radial-gradient(circle at center, #444 0%, #000000 25%, #565252 50%, #222 75%, #444 100%);
-  background-position: center center; 
-  background-repeat: no-repeat; 
+  background-image: url('./sausagedart.png'), radial-gradient(circle at center, #000000 0%, #131c14 25%, #203122 50%, #263c29 75%, rgb(54, 84, 57) 100%);
+  background-blend-mode:normal;
+  background-position: center;
+  background-repeat: repeat;
   background-attachment: fixed;
-  background-size: cover; 
+  background-size: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -87,7 +88,7 @@ input {
   width: 100%;
 }
 button {
-  background-color: #6200ee; 
+  background-color: #263c29; 
   color: white;
   border: none;
   padding: 10px 15px;
@@ -168,4 +169,21 @@ button:hover {
     transform: translate3d(0, 0, 0);
     opacity: 1;
   }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.logo {
+  width: 100px; 
+  height: auto; 
+  margin-right: 100px; 
+}
+
+.header-text {
+  font-size: 24px;
 }

@@ -1,10 +1,10 @@
-// src/components/SetupForm.js
-
 import React, { useState } from 'react';
+import Legs from './Legs';
 
 function SetupForm({ startGame }) {
   const [gameType, setGameType] = useState('301');
   const [players, setPlayers] = useState(['']); // Start with one empty player
+  const [legs, setLegs] = useState(1);
 
   const addPlayerInput = () => {
     setPlayers([...players, '']);
@@ -18,23 +18,37 @@ function SetupForm({ startGame }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    startGame(gameType, players.filter(name => name.trim() !== ''));
+    startGame(gameType, players.filter(name => name.trim() !== ''), legs);
+  };
+
+  const handleGameTypeChange = (type) => {
+    setGameType(type);
+  };
+
+  const handleLegsChange = (value) => {
+    setLegs(parseInt(value));
   };
 
   return (
-    <div className="setup-container"> {/* Centering container */}
-      <div className="setup-box"> {/* Box container for content */}
+    <div className="setup-container">
+      <div className="setup-box">
         <form onSubmit={handleSubmit}>
           <div>
-            <label htmlFor="gameType">Select game type:</label>
-            <select
-              id="gameType"
-              value={gameType}
-              onChange={(e) => setGameType(e.target.value)}
-            >
-              <option value="301">301</option>
-              <option value="501">501</option>
-            </select>
+            <p>Select game type:</p>
+            <div className="game-type-buttons">
+              <button
+                className={gameType === '301' ? 'selected' : ''}
+                onClick={() => handleGameTypeChange('301')}
+              >
+                301
+              </button>
+              <button
+                className={gameType === '501' ? 'selected' : ''}
+                onClick={() => handleGameTypeChange('501')}
+              >
+                501
+              </button>
+            </div>
           </div>
 
           <div className="player-inputs">
@@ -49,9 +63,20 @@ function SetupForm({ startGame }) {
             ))}
           </div>
 
-          <div className="form-buttons"> {}
+          <div className="form-buttons">
             <button type="button" onClick={addPlayerInput}>Add Player</button>
             <button type="submit">Start Game</button>
+          </div>
+          <Legs currentLeg={1} totalLegs={legs} />
+          <div>
+            <label htmlFor="legsInput">Number of Legs:</label>
+            <input
+              id="legsInput"
+              type="number"
+              value={legs}
+              onChange={(e) => handleLegsChange(e.target.value)}
+              min="1"
+            />
           </div>
         </form>
       </div>

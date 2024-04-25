@@ -46,7 +46,7 @@ export default function ScoreInput() {
   
   // Helper function to determine if the score is a double
   function isDouble(score) {
-    return score <= 40 && score % 2 === 0 && score !== 50;
+    return score <= 40 && score % 2 === 0 || score === 50;
   }
   
 

@@ -10,7 +10,9 @@ const initialState = {
   currentTurn: 0,
   startingScore: 301,
   scores: {}, // No scores at the start
-  scoreHistory: [] // No history at start
+  scoreHistory: [], // No history at start
+  legs: 1, // Initialize legs to 1
+  currentLeg: 1, // Initialize currentLeg to 1
 };
 
 
@@ -21,31 +23,31 @@ const ActionTypes = {
   UPDATE_SCORE: 'UPDATE_SCORE',
   UNDO_LAST_SCORE: 'UNDO_LAST_SCORE',
   NEW_GAME: 'NEW_GAME',
+  SET_LEGS: 'SET_LEGS',
 };
 
 function gameReducer(state, action) {
   switch (action.type) {
     case ActionTypes.SET_GAME_TYPE:
-  const startingScore = parseInt(action.payload, 10); // Parse as integer its a number
-  return {
-    ...state,
-    startingScore,
-    scores: state.players.reduce((acc, player) => {
-      acc[player] = startingScore;
-      return acc;
-    }, {}),
-  };
+      const startingScore = parseInt(action.payload, 10);
+      return {
+        ...state,
+        startingScore,
+        scores: state.players.reduce((acc, player) => {
+          acc[player] = startingScore;
+          return acc;
+        }, {}),
+      };
 
-  case ActionTypes.ADD_PLAYER:
-    return {
-      ...state,
-      players: [...state.players, action.payload],
-      scores: {
-        ...state.scores,
-        [action.payload]: state.startingScore // Make sure this is a number
-      },
-    };
-  
+    case ActionTypes.ADD_PLAYER:
+      return {
+        ...state,
+        players: [...state.players, action.payload],
+        scores: {
+          ...state.scores,
+          [action.payload]: state.startingScore,
+        },
+      };
 
     case ActionTypes.START_GAME:
       if (state.players.length < 1) {
@@ -58,8 +60,8 @@ function gameReducer(state, action) {
         currentTurn: 0,
       };
 
-      case ActionTypes.UPDATE_SCORE:
-        const { playerName, score } = action.payload;
+    case ActionTypes.UPDATE_SCORE:
+      const { playerName, score } = action.payload;
         // Get the current score from the state.
         const currentScore = state.scores[playerName];
         const currentPlayer = state.players[state.currentTurn];
@@ -106,42 +108,53 @@ function gameReducer(state, action) {
           };
         }
 
-        case ActionTypes.UNDO_LAST_SCORE:
-          const history = [...state.scoreHistory];
-          const lastTurn = history.pop(); // Remove and retrieve the last turn //
+    case ActionTypes.UNDO_LAST_SCORE:
+      const history = [...state.scoreHistory];
+      const lastTurn = history.pop(); // Remove and retrieve the last turn //
+    
+      if (lastTurn) {
+        const { playerName, score } = lastTurn;
+        // Revert the score
+        const revertedScores = {
+          ...state.scores,
+          [playerName]: state.scores[playerName] + score,
+        };
         
-          if (lastTurn) {
-            const { playerName, score } = lastTurn;
-            // Revert the score
-            const revertedScores = {
-              ...state.scores,
-              [playerName]: state.scores[playerName] + score,
-            };
-            
-            // Set the current turn to the player whose turn was undone //
-            const currentPlayerIndex = state.players.indexOf(playerName);
-            
-            return {
-              ...state,
-              scores: revertedScores,
-              currentTurn: currentPlayerIndex,
-              scoreHistory: history,
-            };
-          } else {
-            // No history to undo or some other error handling //
-            alert('No more actions to undo.'); 
-            return state;
-          }
+        // Set the current turn to the player whose turn was undone //
+        const currentPlayerIndex = state.players.indexOf(playerName);
+        
+        return {
+          ...state,
+          scores: revertedScores,
+          currentTurn: currentPlayerIndex,
+          scoreHistory: history,
+        };
+      } else {
+        // No history to undo or some other error handling //
+        alert('No more actions to undo.'); 
+        return state;
+      }
 
     case ActionTypes.NEW_GAME:
       // Reset to a completely new game state
       return {
-          ...initialState,
+        ...initialState,
         players: [],
         scores: {},
         scoreHistory: []
       };
-    }}
+
+    case ActionTypes.SET_LEGS:
+      return {
+        ...state,
+        legs: action.payload,
+        currentLeg: 1, // Reset currentLeg to 1 when legs are set
+      };
+
+    default:
+      return state;
+  }
+}
 
 export const GameProvider = ({ children }) => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
