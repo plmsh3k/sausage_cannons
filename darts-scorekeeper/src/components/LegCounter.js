@@ -1,1 +1,5 @@
-// Tee tämä *********!!!!!********ÄÄÄÄHHHH
+/* Work in progress. 
+
+this logic has been added to GameControls.js 
+
+*/
