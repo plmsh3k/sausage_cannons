@@ -17,6 +17,8 @@ body {
 body, label, button, input {
   color: #ffffff; 
   font-family: 'Roboto', sans-serif;
+  margin: 3px;
+  line-height: 1.8;
 }
 
 /* For input fields */
@@ -44,7 +46,7 @@ input {
 .counter-box {
   padding: 20px;
   border-radius: 10px;
-  background-color: #1e1e1e;
+  background-color: #355438;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
   text-align: center;
 }
@@ -57,7 +59,7 @@ input {
 
 
 .scoreboard, .game-controls, .player-input-form {
-  background-color: #2b272a; 
+  background-color: #35543880; 
   padding: 20px;
   margin: 20px 0;
   border-radius: 8px;
@@ -71,7 +73,8 @@ input {
   padding: 20px;
   margin: 20px 0;
   border-radius: 8px;
-  background: #1e1e1e; 
+  background: #35543880;
+  background-blend-mode: darken; 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
 }
 
@@ -84,7 +87,7 @@ input {
 /* Additional styling for text inside the scoreboard to ensure it's centered and visible */
 .scoreboard h2, .scoreboard p {
   text-align: center;
-  color: #ffffff; 
+  color: #ffffff;
   width: 100%;
 }
 button {
@@ -129,7 +132,7 @@ button {
 }
 
 .setup-box {
-  background: rgba(255, 255, 255, 0.1); 
+  background: #35543880;
   backdrop-filter: blur(10px);
   padding: 40px;
   border-radius: 10px;
@@ -148,10 +151,10 @@ button {
 
 
 button:hover {
-  background-color: #3700b3;
+  background-color: #355438;
 }
 @keyframes highlight {
-  from { background-color: #6200ee; }
+  from { background-color: #ff0022; }
   to { background-color: transparent; }
 }
 
