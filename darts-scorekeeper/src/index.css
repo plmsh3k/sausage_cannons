@@ -23,7 +23,7 @@ body, label, button, input {
 
 /* For input fields */
 input {
-  background-color: #333; 
+  background-color: #101A11; 
   color: #ffffff; 
 }
 
@@ -91,7 +91,7 @@ input {
   width: 100%;
 }
 button {
-  background-color: #263c29; 
+  background-color: #4C7450; 
   color: white;
   border: none;
   padding: 10px 15px;
